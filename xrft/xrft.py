@@ -994,29 +994,26 @@ def isotropize(ps, fftdim, nfactor=4, truncate=True, complx=False):
         iso_ps = (
             (
                 _groupby_bins_agg(
-                    ps, freq_r, bins=nbins, func="mean", dtype=np.complex128
+                    ps, freq_r, bins=nbins, func="sum", dtype=np.complex128
                 )
                 .rename({"freq_r_bins": "freq_r"})
                 .drop_vars("freq_r")
             )
-            * 2
-            * np.pi
         )
     else:
         iso_ps = (
             (
-                _groupby_bins_agg(ps, freq_r, bins=nbins, func="mean")
+                _groupby_bins_agg(ps, freq_r, bins=nbins, func="sum")
                 .rename({"freq_r_bins": "freq_r"})
                 .drop_vars("freq_r")
             )
-            * 2
-            * np.pi
         )
     iso_ps.coords["freq_r"] = kr.data
+    
     if truncate:
-        return (iso_ps * iso_ps.freq_r).dropna("freq_r")
+        return iso_ps.dropna("freq_r")
     else:
-        return iso_ps * iso_ps.freq_r
+        return iso_ps
 
 
 def isotropic_power_spectrum(
