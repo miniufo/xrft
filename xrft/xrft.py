@@ -992,24 +992,18 @@ def isotropize(ps, fftdim, nfactor=4, truncate=True, complx=False):
 
     if complx:
         iso_ps = (
-            (
-                _groupby_bins_agg(
-                    ps, freq_r, bins=nbins, func="sum", dtype=np.complex128
-                )
-                .rename({"freq_r_bins": "freq_r"})
-                .drop_vars("freq_r")
-            )
+            _groupby_bins_agg(ps, freq_r, bins=nbins, func="sum", dtype=np.complex128)
+            .rename({"freq_r_bins": "freq_r"})
+            .drop_vars("freq_r")
         )
     else:
         iso_ps = (
-            (
-                _groupby_bins_agg(ps, freq_r, bins=nbins, func="sum")
-                .rename({"freq_r_bins": "freq_r"})
-                .drop_vars("freq_r")
-            )
+            _groupby_bins_agg(ps, freq_r, bins=nbins, func="sum")
+            .rename({"freq_r_bins": "freq_r"})
+            .drop_vars("freq_r")
         )
     iso_ps.coords["freq_r"] = kr.data
-    
+
     if truncate:
         return iso_ps.dropna("freq_r")
     else:
